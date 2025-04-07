@@ -1,4 +1,4 @@
-package io.samancore.dmn_ai.model;
+package io.samancore.dmn_ai.model.groq;
 
 import lombok.Builder;
 import lombok.Value;
@@ -11,7 +11,7 @@ import lombok.extern.jackson.Jacksonized;
         builderMethodName = "newBuilder",
         toBuilder = true
 )
-public class DmnAiRequestModel {
-    String model;
-    String message;
+public class GroqMessages {
+    String role;
+    String content;
 }
