@@ -37,8 +37,13 @@ public class GroqClient implements AiClient {
         var response = api.chat(request, apiKey);
         var data = response.getChoices().getFirst().getMessage().getContent();
 
+        var message = extractTextBeforeXmlContent(data);
+        if (message.isEmpty()) {
+            message = extractTextBetweenXmlPatterns(data);
+        }
+
         return DmnAiModel.newBuilder()
-                .setMessage("")
+                .setMessage(message)
                 .setData(extractXmlContent(data))
                 .build();
     }
@@ -49,12 +54,37 @@ public class GroqClient implements AiClient {
     }
 
     public String extractXmlContent(String text) {
-        Pattern patron = Pattern.compile("```xml(.*?)```", Pattern.DOTALL);
+        Pattern patron = Pattern.compile("(?s)```xml\\s*(.*?)\\s*```");
         Matcher matcher = patron.matcher(text);
         if (matcher.find()) {
             return matcher.group(1).trim();
         } else {
-            return "No Response";
+            return "Not Content";
+        }
+    }
+
+    public String extractTextBeforeXmlContent(String text) {
+        Pattern patron = Pattern.compile("(?s)(.*?)```xml\\s*(.*?)\\s*```");
+        Matcher matcher = patron.matcher(text);
+        if (matcher.find()) {
+            return matcher.group(1).trim();
+        } else {
+            return "";
+        }
+    }
+
+    public String extractTextBetweenXmlPatterns(String text) {
+        Pattern patron = Pattern.compile("(?s)```xml\\s*(.*?)\\s*```");
+        Matcher matcher = patron.matcher(text);
+        if (matcher.find()) {
+            int firstEnd = matcher.end();
+            if (matcher.find(firstEnd)) {
+                return text.substring(firstEnd, matcher.start()).trim();
+            } else {
+                return text.substring(firstEnd).trim();
+            }
+        } else {
+            return "";
         }
     }
 }
