@@ -1,10 +1,9 @@
-package io.samancore.dmn_ai.client.groq;
+package io.samancore.dmn_ai.client.ai;
 
-import io.samancore.dmn_ai.client.AiClient;
 import io.samancore.dmn_ai.model.DmnAiModel;
 import io.samancore.dmn_ai.model.DmnAiRequestModel;
-import io.samancore.dmn_ai.model.groq.GroqChatRequest;
-import io.samancore.dmn_ai.model.groq.GroqMessages;
+import io.samancore.dmn_ai.model.ai.ChatRequest;
+import io.samancore.dmn_ai.model.ai.Message;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -14,25 +13,42 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@ApplicationScoped
-public class GroqClient implements AiClient {
-    private static final String AI_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
-    private static final String USER_NAME = "user";
+import static io.samancore.dmn_ai.client.ai.Constants.*;
 
-    @ConfigProperty(name = "api.key.groq")
+@ApplicationScoped
+public class AiClient implements io.samancore.dmn_ai.client.AiClient {
+
+    @ConfigProperty(name = "api.key")
     String apiKey;
 
     @Inject
     @RestClient
-    GroqApi api;
+    AiApi api;
 
     @Override
     public DmnAiModel generate(DmnAiRequestModel model) {
-        String aiModel = (model.getModel() == null || model.getModel().isEmpty()) ? AI_MODEL : model.getModel();
-
-        var request = GroqChatRequest.newBuilder()
-                .setModel(aiModel)
-                .setMessages(List.of(GroqMessages.newBuilder().setRole(USER_NAME).setContent(model.getMessage()).build()))
+        var request = ChatRequest.newBuilder()
+                .setStream(false)
+                .setModel(AI_MODEL)
+                .setMessages(
+                        List.of(Message.newBuilder()
+                                        .setRole(SYSTEM_NAME)
+                                        .setContent(CONTENT_SYSTEM)
+                                        .build(),
+                                Message.newBuilder()
+                                        .setRole(USER_NAME)
+                                        .setContent(INITIAL_CONTENT_USER)
+                                        .build(),
+                                Message.newBuilder()
+                                        .setRole(ASSISTANT_NAME)
+                                        .setContent(INITIAL_CONTENT_ASSISTANT)
+                                        .build(),
+                                Message.newBuilder()
+                                        .setRole(USER_NAME)
+                                        .setContent(model.getMessage())
+                                        .build()
+                        )
+                )
                 .build();
         var response = api.chat(request, apiKey);
         var data = response.getChoices().getFirst().getMessage().getContent();
@@ -59,7 +75,7 @@ public class GroqClient implements AiClient {
         if (matcher.find()) {
             return matcher.group(1).trim();
         } else {
-            return "Not Content";
+            return "";
         }
     }
 

@@ -12,6 +12,5 @@ import lombok.extern.jackson.Jacksonized;
         toBuilder = true
 )
 public class DmnAiRequestModel {
-    String model;
     String message;
 }

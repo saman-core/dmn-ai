@@ -1,4 +1,4 @@
-package io.samancore.dmn_ai.model.groq;
+package io.samancore.dmn_ai.model.ai;
 
 import lombok.Builder;
 import lombok.Value;
@@ -13,7 +13,7 @@ import java.util.List;
         builderMethodName = "newBuilder",
         toBuilder = true
 )
-public class GroqChatResponse {
+public class ChatResponse {
     String id;
     String object;
     Long created;
@@ -21,7 +21,6 @@ public class GroqChatResponse {
     List<Choices> choices;
     Object usage;
     String system_fingerprint;
-    Object x_groq;
 
     @Value
     @Jacksonized
@@ -32,7 +31,7 @@ public class GroqChatResponse {
     )
     public static class Choices {
         Integer index;
-        GroqMessages message;
+        Message message;
         Object logprobs;
         String finish_reason;
     }

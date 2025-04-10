@@ -1,8 +1,8 @@
-package io.samancore.dmn_ai.client.groq;
+package io.samancore.dmn_ai.client.ai;
 
 import io.quarkus.rest.client.reactive.NotBody;
-import io.samancore.dmn_ai.model.groq.GroqChatRequest;
-import io.samancore.dmn_ai.model.groq.GroqChatResponse;
+import io.samancore.dmn_ai.model.ai.ChatRequest;
+import io.samancore.dmn_ai.model.ai.ChatResponse;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -13,11 +13,11 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 @ApplicationScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@RegisterRestClient(configKey = "groq-api")
-public interface GroqApi {
+@RegisterRestClient(configKey = "ai-api")
+public interface AiApi {
 
     @POST
     @ClientHeaderParam(name = "Authorization", value = "Bearer {token}")
-    GroqChatResponse chat(GroqChatRequest request,
-                          @NotBody String token);
+    ChatResponse chat(ChatRequest request,
+                      @NotBody String token);
 }

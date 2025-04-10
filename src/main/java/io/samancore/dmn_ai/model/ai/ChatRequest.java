@@ -1,8 +1,10 @@
-package io.samancore.dmn_ai.model.groq;
+package io.samancore.dmn_ai.model.ai;
 
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
+
+import java.util.List;
 
 @Value
 @Jacksonized
@@ -11,7 +13,8 @@ import lombok.extern.jackson.Jacksonized;
         builderMethodName = "newBuilder",
         toBuilder = true
 )
-public class GroqMessages {
-    String role;
-    String content;
+public class ChatRequest {
+    String model;
+    Boolean stream;
+    List<Message> messages;
 }
