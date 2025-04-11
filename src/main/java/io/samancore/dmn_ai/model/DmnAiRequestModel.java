@@ -13,4 +13,5 @@ import lombok.extern.jackson.Jacksonized;
 )
 public class DmnAiRequestModel {
     String message;
+    String initialModel;
 }

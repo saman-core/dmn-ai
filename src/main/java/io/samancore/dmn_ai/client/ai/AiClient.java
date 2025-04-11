@@ -33,15 +33,7 @@ public class AiClient implements io.samancore.dmn_ai.client.AiClient {
                 .setMessages(
                         List.of(Message.newBuilder()
                                         .setRole(SYSTEM_NAME)
-                                        .setContent(CONTENT_SYSTEM)
-                                        .build(),
-                                Message.newBuilder()
-                                        .setRole(USER_NAME)
-                                        .setContent(INITIAL_CONTENT_USER)
-                                        .build(),
-                                Message.newBuilder()
-                                        .setRole(ASSISTANT_NAME)
-                                        .setContent(INITIAL_CONTENT_ASSISTANT)
+                                        .setContent(CONTENT_SYSTEM_INIT + model.getInitialModel() + CONTENT_SYSTEM_END)
                                         .build(),
                                 Message.newBuilder()
                                         .setRole(USER_NAME)
